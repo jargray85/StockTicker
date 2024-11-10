@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/Header.css';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const Header = () => {
     const [indices, setIndices] = useState([]);
     const API_KEY = process.env.REACT_APP_FMP_API_KEY;
-    const location = useLocation()
 
     useEffect(() => {
         const fetchIndices = async () => {

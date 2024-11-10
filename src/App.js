@@ -1,18 +1,18 @@
-import './App.css';
-// import route and our components
-import {Route, Routes} from 'react-router-dom'
-import Nav from './components/Nav';
-import Price from './pages/price';
-import Stocks from './pages/stocks';
+import { Route, Routes } from 'react-router-dom';
+import Header from './components/Header';
+import Stock from './pages/stock';
+import Home from './pages/home';
 
 function App() {
   return (
     <div className="App">
-      <Nav />
-      <Routes >
-        <Route path='/stocks' element={<Stocks />} />
-        <Route path='/price/:symbol' element={<Price />} />
-      </Routes>
+      <Header />
+      <main className="main-content">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/stock/:symbol" element={<Stock />} />
+        </Routes>
+      </main>
     </div>
   );
 }

@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import '../styles/Stock.css';
 
 const Stock = () => {
-    const apiKey = 'c70eede2154ffd89e1d9381562d4ed23';
+    const apiKey = process.env.REACT_APP_FMP_API_KEY;
     const { symbol } = useParams();
     const [stock, setStock] = useState(null);
 

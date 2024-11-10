@@ -5,7 +5,7 @@ import '../styles/Home.css';
 const Home = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
-    const API_KEY = 'c70eede2154ffd89e1d9381562d4ed23';
+    const API_KEY = process.env.REACT_APP_FMP_API_KEY;
 
     const handleSearch = async (query) => {
         if (query.length < 1) {

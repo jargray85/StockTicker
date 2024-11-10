@@ -45,7 +45,7 @@ const Stock = () => {
         } catch (error) {
             console.error('Error fetching stock data:', error);
         }
-    }, [symbol, apiKey]);
+    }, [symbol]);
 
     useEffect(() => {
         getStock();

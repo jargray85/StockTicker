@@ -1,13 +1,41 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useState, useCallback } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import '../styles/Stock.css';
 
+const apiKey = process.env.REACT_APP_FMP_API_KEY;
+
 const Stock = () => {
-    const apiKey = process.env.REACT_APP_FMP_API_KEY;
     const { symbol } = useParams();
     const [stock, setStock] = useState(null);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
 
-    const getStock = async () => {
+    const handleSearch = async (query) => {
+        if (query.length < 1) {
+            setSearchResults([]);
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `https://financialmodelingprep.com/api/v3/search-name?query=${query}&limit=5&exchange=NASDAQ,NYSE&apikey=${apiKey}`
+            );
+            const data = await response.json();
+            setSearchResults(data.slice(0, 5));
+        } catch (error) {
+            console.error('Error fetching search results:', error);
+        }
+    };
+
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            handleSearch(searchQuery);
+        }, 300);
+
+        return () => clearTimeout(timeoutId);
+    }, [searchQuery]);
+
+    const getStock = useCallback(async () => {
         try {
             const response = await fetch(
                 `https://financialmodelingprep.com/api/v3/quote/${symbol}?apikey=${apiKey}`
@@ -17,11 +45,11 @@ const Stock = () => {
         } catch (error) {
             console.error('Error fetching stock data:', error);
         }
-    };
+    }, [symbol, apiKey]);
 
     useEffect(() => {
         getStock();
-    }, [symbol]);
+    }, [symbol, getStock]);
 
     const Loaded = () => {
         const priceChange = stock.change.toFixed(2);
@@ -29,6 +57,36 @@ const Stock = () => {
         const isPositive = stock.change > 0;
 
         return (
+            <>
+            <div className="search-container">
+                <h1>Search for a stock</h1>
+                <input
+                    type="text"
+                    placeholder="Search stocks..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                />
+
+                {searchResults.length > 0 && (
+                    <div className="search-results">
+                        {searchResults.map(result => (
+                            <Link 
+                                key={result.symbol}
+                                to={`/stock/${result.symbol}`}
+                                className="search-result-item"
+                                onClick={() => {
+                                    setSearchQuery(result.symbol);
+                                    setSearchResults([]);
+                                }}
+                            >
+                                <span className="symbol">{result.symbol}</span>
+                                <span className="name">{result.name}</span>
+                                <span className="exchange">{result.exchangeShortName}</span>
+                            </Link>
+                        ))}
+                    </div>
+                )}
+            </div>
             <div className="stock-container">
                 <div className="stock-header">
                     <div className="stock-title">
@@ -82,6 +140,7 @@ const Stock = () => {
                     </div>
                 </div>
             </div>
+            </>
         );
     };
 

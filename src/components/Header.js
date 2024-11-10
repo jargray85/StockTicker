@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import '../styles/Header.css';
+import { Link, useLocation } from 'react-router-dom';
 
 const Header = () => {
-    const [searchQuery, setSearchQuery] = useState('');
-    const [searchResults, setSearchResults] = useState([]);
     const [indices, setIndices] = useState([]);
-    const API_KEY = 'c70eede2154ffd89e1d9381562d4ed23';
+    const API_KEY = process.env.REACT_APP_FMP_API_KEY;
+    const location = useLocation()
 
     useEffect(() => {
         const fetchIndices = async () => {
@@ -38,10 +37,15 @@ const Header = () => {
         fetchIndices();
         const interval = setInterval(fetchIndices, 60000);
         return () => clearInterval(interval);
-    }, []);
+    }, [API_KEY]);
 
     return (
         <header className="header">
+            <div className="nav">
+                <Link to='/'>
+                    <div>Stockticker</div>
+                </Link>
+            </div>
             <div className="market-indices">
                 {indices && indices.length > 0 ? (
                     indices.map(index => (

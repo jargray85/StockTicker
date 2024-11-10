@@ -1,5 +1,34 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
+.nav {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+    position: absolute;
+    left: 20px;
+}
+
+.nav a {
+    text-decoration: none;
+}
+
+.nav div {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2rem;
+    color: #333;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
 .header {
-  padding: 1rem;
-  background: #fff;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    position: relative;
+    justify-content: center;
+}
+
+/* Remove visited link color */
+.nav a:visited {
+    color: inherit;
 }

@@ -10,7 +10,7 @@ const Header = () => {
         const fetchIndices = async () => {
             try {
                 const response = await fetch(
-                    `https://financialmodelingprep.com/api/v3/quote/SPY,DIA,QQQ?apikey=${API_KEY}`
+                    `https://financialmodelingprep.com/api/v3/quote/SPY,DIA?apikey=${API_KEY}`
                 );
 
                 if (!response.ok) {
@@ -23,9 +23,12 @@ const Header = () => {
                     ...item,
                     displayName: item.symbol === 'SPY' ? 'S&P 500' :
                                 item.symbol === 'DIA' ? 'DOW' :
-                                'NASDAQ'
+                                'NASDAQ',
+                    price: item.symbol === 'DIA' ? item.price * 100 :
+                           item.symbol === 'SPY' ? item.price * 10 :
+                           item.price
                 }));
-
+                console.log('Mapped data:', mappedData);
                 setIndices(mappedData);
             } catch (error) {
                 console.error('Error fetching indices:', error);
@@ -50,7 +53,10 @@ const Header = () => {
                     indices.map(index => (
                         <div key={index.symbol} className="index-item">
                             <span className="index-name">{index.displayName}</span>
-                            <span className="index-price">{index.price.toFixed(2)}</span>
+                            <span className="index-price">{index.price.toLocaleString(undefined, {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            })}</span>
                             <span className={`index-change ${index.changesPercentage > 0 ? 'positive' : 'negative'}`}>
                                 {index.changesPercentage > 0 ? '+' : ''}{index.changesPercentage.toFixed(2)}%
                             </span>

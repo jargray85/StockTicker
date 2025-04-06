@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import '../styles/Home.css';
 
-const StockSearch = () => {
+const Stocksearch = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const API_KEY = process.env.REACT_APP_FMP_API_KEY;
@@ -63,4 +63,4 @@ const StockSearch = () => {
     );
 }
 
-export default StockSearch
+export default Stocksearch

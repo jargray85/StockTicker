@@ -1,0 +1,16 @@
+.index-charts {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    align-items: center;
+  }
+  
+  .index-chart {
+    width: 600px;
+    border: 1px solid #ddd;
+    padding: 1rem;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }

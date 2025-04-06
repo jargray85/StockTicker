@@ -9,27 +9,32 @@ const Header = () => {
     useEffect(() => {
         const fetchIndices = async () => {
             try {
-                const response = await fetch(
-                    `https://financialmodelingprep.com/api/v3/quote/SPY,DIA?apikey=${API_KEY}`
-                );
+                const fetchSymbol = async (symbol, displayName) => {
+                    const response = await fetch(`https://financialmodelingprep.com/stable/quote?symbol=${symbol}&apikey=${API_KEY}`);
+                    if (!response.ok) {
+                        throw new Error(`API request for ${symbol} failed`);
+                    }
+                    const data = await response.json();
+                    return data.map(item => {
+                        const computedChangePercentage = item.changesPercentage !== undefined ? item.changesPercentage :
+                            (item.previousClose ? ((item.price - item.previousClose) / item.previousClose) * 100 : undefined);
+                        return {
+                            ...item,
+                            displayName,
+                            price: item.price,
+                            changesPercentage: computedChangePercentage
+                        };
+                    });
+                };
 
-                if (!response.ok) {
-                    throw new Error('API request failed');
-                }
+                const [spData, nasdaqData] = await Promise.all([
+                    fetchSymbol('^GSPC', 'S&P 500'),
+                    fetchSymbol('^IXIC', 'NASDAQ')
+                ]);
 
-                const data = await response.json();
-                
-                const mappedData = data.map(item => ({
-                    ...item,
-                    displayName: item.symbol === 'SPY' ? 'S&P 500' :
-                                item.symbol === 'DIA' ? 'DOW' :
-                                'NASDAQ',
-                    price: item.symbol === 'DIA' ? item.price * 100 :
-                           item.symbol === 'SPY' ? item.price * 10 :
-                           item.price
-                }));
-                console.log('Mapped data:', mappedData);
-                setIndices(mappedData);
+                const combinedData = [...spData, ...nasdaqData];
+                console.log('Combined data:', combinedData);
+                setIndices(combinedData);
             } catch (error) {
                 console.error('Error fetching indices:', error);
                 setIndices([]);
@@ -57,8 +62,8 @@ const Header = () => {
                                 minimumFractionDigits: 2,
                                 maximumFractionDigits: 2
                             })}</span>
-                            <span className={`index-change ${index.changesPercentage > 0 ? 'positive' : 'negative'}`}>
-                                {index.changesPercentage > 0 ? '+' : ''}{index.changesPercentage.toFixed(2)}%
+                            <span className={`index-change ${index.changesPercentage !== undefined ? (index.changesPercentage > 0 ? 'positive' : 'negative') : ''}`}>
+                                {index.changesPercentage !== undefined ? (index.changesPercentage > 0 ? '+' : '') + index.changesPercentage.toFixed(2) + '%' : 'N/A'}
                             </span>
                         </div>
                     ))

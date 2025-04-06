@@ -27,12 +27,13 @@ const Header = () => {
                     });
                 };
 
-                const [spData, nasdaqData] = await Promise.all([
+                const [spData, nasdaqData, dowData] = await Promise.all([
                     fetchSymbol('^GSPC', 'S&P 500'),
-                    fetchSymbol('^IXIC', 'NASDAQ')
+                    fetchSymbol('^IXIC', 'NASDAQ'),
+                    fetchSymbol('^DJI', 'Dow Jones')
                 ]);
 
-                const combinedData = [...spData, ...nasdaqData];
+                const combinedData = [...spData, ...nasdaqData, ...dowData];
                 console.log('Combined data:', combinedData);
                 setIndices(combinedData);
             } catch (error) {

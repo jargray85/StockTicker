@@ -5,6 +5,7 @@ import '../styles/Home.css'; // or whichever CSS file you use for styling
 const StockSearch = () => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   // Use your Finnhub API key
   const API_KEY = process.env.REACT_APP_FH_API_KEY;
   const navigate = useNavigate();
@@ -23,6 +24,7 @@ const StockSearch = () => {
       setResults([]);
       return;
     }
+    setIsLoading(true);
     try {
       const response = await fetch(
         `https://finnhub.io/api/v1/search?q=${encodeURIComponent(searchTerm)}&token=${API_KEY}`
@@ -35,6 +37,8 @@ const StockSearch = () => {
     } catch (error) {
       console.error('Error fetching search results:', error);
       setResults([]);
+    } finally {
+      setIsLoading(false);
     }
   }, [API_KEY]);
 
@@ -56,7 +60,9 @@ const StockSearch = () => {
       />
       {query && (
         <div className="search-results">
-          {results && results.length > 0 ? (
+          {isLoading ? (
+            <div>Loading...</div>
+          ) : results && results.length > 0 ? (
             results.map((item) => (
               <div
                 key={item.symbol}

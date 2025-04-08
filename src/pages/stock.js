@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
+import StockSearch from '../components/Stocksearch';
 import '../styles/Stock.css';
 
 // Use your Finnhub API key
@@ -8,35 +9,6 @@ const API_KEY = process.env.REACT_APP_FH_API_KEY;
 const Stock = () => {
   const { symbol } = useParams();
   const [stock, setStock] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-
-  // Search using Finnhub's search endpoint
-  const handleSearch = async (query) => {
-    if (query.length < 1) {
-      setSearchResults([]);
-      return;
-    }
-    try {
-      const response = await fetch(
-        `https://finnhub.io/api/v1/search?q=${encodeURIComponent(query)}&token=${API_KEY}`
-      );
-      const data = await response.json();
-      // Finnhub returns results in the "result" field; limit to the top 5
-      setSearchResults(data.result ? data.result.slice(0, 5) : []);
-    } catch (error) {
-      console.error('Error fetching search results:', error);
-      setSearchResults([]);
-    }
-  };
-
-  // Debounce search input
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      handleSearch(searchQuery);
-    }, 300);
-    return () => clearTimeout(timeoutId);
-  }, [searchQuery]);
 
   // Fetch stock quote and profile concurrently from Finnhub
   const getStock = useCallback(async () => {
@@ -62,16 +34,6 @@ const Stock = () => {
     getStock();
   }, [symbol, getStock]);
 
-  // Function to handle selecting a search result
-  const handleSelect = (item) => {
-    console.log('Selected:', item);
-    // Navigate to the new stock page using a full-page reload.
-    window.location.assign(`/stock/${item.symbol}`);
-    // Clear the search input and results
-    setSearchQuery('');
-    setSearchResults([]);
-  };
-
   const Loaded = () => {
     // Finnhub quote: c = current price, h = high, l = low, o = open, pc = previous close
     const currentPrice = stock.c;
@@ -84,28 +46,7 @@ const Stock = () => {
       <>
         <div className="search-container">
           <h1>Search for a stock</h1>
-          <input
-            type="text"
-            placeholder="Search stocks..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          {searchQuery && (
-            <div className="search-results">
-              {searchResults.length > 0 ? (
-                searchResults.map(result => (
-                  <div
-                    key={result.symbol}
-                    className="search-result-item"
-                    onClick={() => handleSelect(result)}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    <span className="symbol">{result.symbol}</span> - <span className="name">{result.description}</span>
-                  </div>
-                ))
-              ) : null}
-            </div>
-          )}
+          <StockSearch />
         </div>
 
         <div className="stock-container">

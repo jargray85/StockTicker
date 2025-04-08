@@ -18,7 +18,6 @@ const Indexchart = ({ symbol, displayName, apiKey }) => {
         console.log(`Alpha Vantage response for ${symbol}:`, data);
         const timeSeries = data["Time Series (5min)"];
         if (!timeSeries) {
-          // If there's an error message or note, log it
           if (data["Note"]) {
             console.error(`API Note for ${symbol}:`, data["Note"]);
           } else if (data["Error Message"]) {
@@ -38,7 +37,6 @@ const Indexchart = ({ symbol, displayName, apiKey }) => {
             close: parseFloat(datapoint["4. close"]),
           };
         });
-        // Sort the data chronologically (oldest first)
         processedData.sort((a, b) => a.time - b.time);
         setChartData(processedData);
       } catch (error) {
@@ -57,7 +55,7 @@ const Indexchart = ({ symbol, displayName, apiKey }) => {
     const chartContainer = document.getElementById(`chart-${symbol.replace(/[^a-zA-Z0-9]/g, '')}`);
     const chart = createChart(chartContainer, {
       width: chartContainer.clientWidth,
-      height: 200, // Smaller height for a compact display
+      height: 200,
       layout: {
         backgroundColor: '#ffffff',
         textColor: '#000',
@@ -71,9 +69,8 @@ const Indexchart = ({ symbol, displayName, apiKey }) => {
       },
     });
 
-    // Instead of a candlestick series, we use a line series.
-    const lineSeries = chart.addLineSeries();
-    // Map the data to use the close price as the value for the line chart.
+    // Use addSeries with type 'line' to add a line series.
+    const lineSeries = chart.addSeries({ type: 'line' });
     lineSeries.setData(chartData.map(item => ({ time: item.time, value: item.close })));
 
     const handleResize = () => {

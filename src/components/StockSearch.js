@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/Home.css'; // or whichever CSS file you use for styling
+import '../styles/Home.css';
 
 const StockSearch = () => {
   const [query, setQuery] = useState('');

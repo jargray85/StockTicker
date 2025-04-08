@@ -1,5 +1,5 @@
 import React from 'react';
-import StockSearch from '../components/Stocksearch';
+import StockSearch from '../components/StockSearch';
 import NewsFeed from '../components/Newsfeed';
 
 const Home = () => {

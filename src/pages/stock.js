@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import StockSearch from '../components/Stocksearch';
+import StockSearch from '../components/StockSearch';
 import '../styles/Stock.css';
 
 // Use your Finnhub API key

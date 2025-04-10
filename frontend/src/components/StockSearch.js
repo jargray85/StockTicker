@@ -7,19 +7,15 @@ const StockSearch = () => {
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  // Use your Finnhub API key
-  const API_KEY = process.env.REACT_APP_FH_API_KEY;
   const navigate = useNavigate();
 
   const handleSelect = (item) => {
     console.log('Selected:', item);
-    // Navigate to the stock detail page
     navigate(`/stock/${item.symbol}`);
     setQuery(item.symbol);
     setResults([]);
   };
 
-  // Fetch search results from Finnhub
   const fetchSearchResults = useCallback(async (searchTerm) => {
     if (!searchTerm) {
       setResults([]);
@@ -28,11 +24,14 @@ const StockSearch = () => {
     setIsLoading(true);
     setError(null);
     try {
-      if (!API_KEY) {
-        throw new Error('API key is not configured');
-      }
       const response = await fetch(
-        `https://finnhub.io/api/v1/search?q=${encodeURIComponent(searchTerm)}&token=${API_KEY}`
+        `http://localhost:5001/api/stock/search?q=${encodeURIComponent(searchTerm)}`,
+        {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json'
+          }
+        }
       );
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
@@ -47,13 +46,12 @@ const StockSearch = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [API_KEY]);
+  }, []);
 
-  // Debounce search input to avoid excessive API calls
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
       fetchSearchResults(query);
-    }, 300); // 300ms delay after user stops typing
+    }, 300);
     return () => clearTimeout(delayDebounce);
   }, [query, fetchSearchResults]);
 

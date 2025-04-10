@@ -1,21 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { createChart } from 'lightweight-charts';
 
-const Indexchart = ({ symbol, displayName, apiKey }) => {
+const Indexchart = ({ symbol, displayName }) => {
   const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
     const fetchChartData = async () => {
       try {
         const response = await fetch(
-          `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${symbol}&interval=5min&apikey=${apiKey}`
+          `http://localhost:5001/api/chart/${symbol}`,
+          {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json'
+            }
+          }
         );
         if (!response.ok) {
           throw new Error(`API request for ${symbol} failed`);
         }
         const data = await response.json();
-        // Log the full API response for debugging
-        console.log(`Alpha Vantage response for ${symbol}:`, data);
+        console.log(`Chart data for ${symbol}:`, data);
         const timeSeries = data["Time Series (5min)"];
         if (!timeSeries) {
           if (data["Note"]) {
@@ -25,7 +30,7 @@ const Indexchart = ({ symbol, displayName, apiKey }) => {
           } else {
             console.error(`No time series data available for ${symbol}`);
           }
-          return; // Exit without updating chart data
+          return;
         }
         const processedData = Object.keys(timeSeries).map(timeKey => {
           const datapoint = timeSeries[timeKey];
@@ -45,9 +50,9 @@ const Indexchart = ({ symbol, displayName, apiKey }) => {
     };
 
     fetchChartData();
-    const interval = setInterval(fetchChartData, 60000); // Refresh every minute
+    const interval = setInterval(fetchChartData, 60000);
     return () => clearInterval(interval);
-  }, [symbol, apiKey]);
+  }, [symbol]);
 
   useEffect(() => {
     if (chartData.length === 0) return;
@@ -69,7 +74,6 @@ const Indexchart = ({ symbol, displayName, apiKey }) => {
       },
     });
 
-    // Use addSeries with type 'line' to add a line series.
     const lineSeries = chart.addSeries({ type: 'line' });
     lineSeries.setData(chartData.map(item => ({ time: item.time, value: item.close })));
 

@@ -3,19 +3,59 @@ import { useParams } from 'react-router-dom';
 import StockSearch from '../components/StockSearch';
 import '../styles/Stock.css';
 
-// Use your Finnhub API key
-const API_KEY = process.env.REACT_APP_FH_API_KEY;
-
 const Stock = () => {
   const { symbol } = useParams();
   const [stock, setStock] = useState(null);
 
-  // Fetch stock quote and profile concurrently from Finnhub
+  const formatMarketCap = (value) => {
+    if (!value || value === 0) return 'N/A';
+    
+    // If the value is already in billions
+    if (value < 1000) {
+      return `$${value.toFixed(2)}B`;
+    }
+    
+    // If the value is in millions
+    if (value < 1000000) {
+      return `$${(value / 1000).toFixed(2)}B`;
+    }
+    
+    // If the value is in raw format
+    return `$${(value / 1e9).toFixed(2)}B`;
+  };
+
+  const formatVolume = (value) => {
+    if (!value || value === 0) return 'N/A';
+    
+    // If the value is in millions
+    if (value < 1000000) {
+      return `${(value / 1000).toFixed(1)}K`;
+    }
+    
+    // If the value is in billions
+    if (value < 1000000000) {
+      return `${(value / 1000000).toFixed(1)}M`;
+    }
+    
+    // If the value is in trillions
+    return `${(value / 1000000000).toFixed(1)}B`;
+  };
+
   const getStock = useCallback(async () => {
     try {
       const [quoteResponse, profileResponse] = await Promise.all([
-        fetch(`https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${API_KEY}`),
-        fetch(`https://finnhub.io/api/v1/stock/profile2?symbol=${symbol}&token=${API_KEY}`)
+        fetch(`http://localhost:5001/api/stock/quote/${symbol}`, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json'
+          }
+        }),
+        fetch(`http://localhost:5001/api/stock/profile/${symbol}`, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json'
+          }
+        })
       ]);
 
       if (!quoteResponse.ok || !profileResponse.ok) {
@@ -23,7 +63,11 @@ const Stock = () => {
       }
       const quoteData = await quoteResponse.json();
       const profileData = await profileResponse.json();
-      // Combine the quote and profile data
+      
+      // Log the data to see the structure
+      console.log('Quote data:', quoteData);
+      console.log('Profile data:', profileData);
+      
       setStock({ ...quoteData, ...profileData });
     } catch (error) {
       console.error('Error fetching stock data:', error);
@@ -35,7 +79,6 @@ const Stock = () => {
   }, [symbol, getStock]);
 
   const Loaded = () => {
-    // Finnhub quote: c = current price, h = high, l = low, o = open, pc = previous close
     const currentPrice = stock.c;
     const previousClose = stock.pc;
     const priceChange = currentPrice - previousClose;
@@ -84,7 +127,25 @@ const Stock = () => {
               <div className="detail-item">
                 <span className="label">Market Cap</span>
                 <span className="value">
-                  {stock.marketCapitalization ? `$${(stock.marketCapitalization / 1e9).toFixed(2)}B` : 'N/A'}
+                  {formatMarketCap(stock.marketCapitalization)}
+                </span>
+              </div>
+              <div className="detail-item">
+                <span className="label">IPO Date</span>
+                <span className="value">
+                  {stock.ipo ? new Date(stock.ipo).toLocaleDateString() : 'N/A'}
+                </span>
+              </div>
+              <div className="detail-item">
+                <span className="label">52W High</span>
+                <span className="value">
+                  ${stock.h ? stock.h.toFixed(2) : 'N/A'}
+                </span>
+              </div>
+              <div className="detail-item">
+                <span className="label">52W Low</span>
+                <span className="value">
+                  ${stock.l ? stock.l.toFixed(2) : 'N/A'}
                 </span>
               </div>
             </div>

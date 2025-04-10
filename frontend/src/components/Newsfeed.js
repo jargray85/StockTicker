@@ -3,14 +3,16 @@ import '../styles/NewsFeed.css';
 
 const NewsFeed = () => {
   const [news, setNews] = useState([]);
-  const API_KEY = process.env.REACT_APP_FH_API_KEY;
 
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await fetch(
-          `https://finnhub.io/api/v1/news?category=general&token=${API_KEY}`
-        );
+        const response = await fetch('http://localhost:5001/api/news', {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
         if (!response.ok) {
           throw new Error('Failed to fetch news');
         }
@@ -22,7 +24,7 @@ const NewsFeed = () => {
     };
 
     fetchNews();
-  }, [API_KEY]);
+  }, []);
 
   return (
     <div className="newsfeed">

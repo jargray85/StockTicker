@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/NewsFeed.css';
+import config from '../config';
 
 const NewsFeed = () => {
   const [news, setNews] = useState([]);
@@ -7,7 +8,7 @@ const NewsFeed = () => {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await fetch('http://localhost:5001/api/news', {
+        const response = await fetch(`${config.apiBaseUrl}/api/news`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json'

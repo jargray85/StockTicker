@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Home.css';
+import config from '../config';
 
 const StockSearch = () => {
   const [query, setQuery] = useState('');
@@ -25,7 +26,7 @@ const StockSearch = () => {
     setError(null);
     try {
       const response = await fetch(
-        `http://localhost:5001/api/stock/search?q=${encodeURIComponent(searchTerm)}`,
+        `${config.apiBaseUrl}/api/stock/search?q=${encodeURIComponent(searchTerm)}`,
         {
           method: 'GET',
           headers: {

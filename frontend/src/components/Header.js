@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/Header.css';
 import { Link } from 'react-router-dom';
+import config from '../config';
 
 const Header = () => {
     const [indices, setIndices] = useState([]);
@@ -12,7 +13,7 @@ const Header = () => {
             try {
                 setLoading(true);
                 setError(null);
-                const response = await fetch('http://localhost:5001/api/indices');
+                const response = await fetch(`${config.apiBaseUrl}/api/indices`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }

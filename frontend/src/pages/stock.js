@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import StockSearch from '../components/StockSearch';
 import '../styles/Stock.css';
+import config from '../config';
 
 const Stock = () => {
   const { symbol } = useParams();
@@ -44,13 +45,13 @@ const Stock = () => {
   const getStock = useCallback(async () => {
     try {
       const [quoteResponse, profileResponse] = await Promise.all([
-        fetch(`http://localhost:5001/api/stock/quote/${symbol}`, {
+        fetch(`${config.apiBaseUrl}/api/stock/quote/${symbol}`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json'
           }
         }),
-        fetch(`http://localhost:5001/api/stock/profile/${symbol}`, {
+        fetch(`${config.apiBaseUrl}/api/stock/profile/${symbol}`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json'

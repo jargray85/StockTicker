@@ -25,23 +25,6 @@ const Stock = () => {
     return `$${(value / 1e9).toFixed(2)}B`;
   };
 
-  const formatVolume = (value) => {
-    if (!value || value === 0) return 'N/A';
-    
-    // If the value is in millions
-    if (value < 1000000) {
-      return `${(value / 1000).toFixed(1)}K`;
-    }
-    
-    // If the value is in billions
-    if (value < 1000000000) {
-      return `${(value / 1000000).toFixed(1)}M`;
-    }
-    
-    // If the value is in trillions
-    return `${(value / 1000000000).toFixed(1)}B`;
-  };
-
   const getStock = useCallback(async () => {
     try {
       const [quoteResponse, profileResponse] = await Promise.all([

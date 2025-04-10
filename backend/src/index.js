@@ -9,7 +9,7 @@ const port = process.env.PORT || 5001;
 
 // CORS configuration
 const corsOptions = {
-  origin: ['http://localhost:3000', 'https://stockticker.netlify.app'],
+  origin: '*',  // Allow all origins for testing
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin', 'X-Requested-With'],
   credentials: true,

@@ -26,12 +26,15 @@ app.use(express.json());
 app.get('/api/stock/quote/:symbol', async (req, res) => {
   try {
     const { symbol } = req.params;
+    console.log(`Fetching quote for ${symbol}...`);
     const response = await fetch(
       `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${process.env.FINNHUB_API_KEY}`
     );
     const data = await response.json();
+    console.log(`Quote data for ${symbol}:`, JSON.stringify(data, null, 2));
     res.json(data);
   } catch (error) {
+    console.error(`Error fetching quote for ${req.params.symbol}:`, error);
     res.status(500).json({ error: error.message });
   }
 });

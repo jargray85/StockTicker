@@ -122,6 +122,13 @@
     font-size: 1.2rem;
 }
 
+.note {
+    font-size: 0.8em;
+    color: #666;
+    margin-left: 5px;
+    font-style: italic;
+}
+
 @media (max-width: 640px) {
     .stock-title h1 {
         font-size: 1.8rem;

@@ -121,15 +121,15 @@ const Stock = () => {
                 </span>
               </div>
               <div className="detail-item">
-                <span className="label">52W High</span>
+                <span className="label">Previous Day Close</span>
                 <span className="value">
-                  ${stock.h ? stock.h.toFixed(2) : 'N/A'}
+                  ${stock.pc ? stock.pc.toFixed(2) : 'N/A'}
                 </span>
               </div>
               <div className="detail-item">
-                <span className="label">52W Low</span>
+                <span className="label">Day Opening Price</span>
                 <span className="value">
-                  ${stock.l ? stock.l.toFixed(2) : 'N/A'}
+                  ${stock.o ? stock.o.toFixed(2) : 'N/A'}
                 </span>
               </div>
             </div>
